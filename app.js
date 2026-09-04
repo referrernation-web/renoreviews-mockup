@@ -2,7 +2,7 @@
 (function(){
   const $ = (s, r=document) => r.querySelector(s), $$ = (s, r=document) => [...r.querySelectorAll(s)]
   const q = new URLSearchParams(location.search)
-  const state = { job: q.get('job')||'tts', area: (q.get('area')||'ottawa').toLowerCase(), sort: q.get('sort')||'reviews', dir: q.get('dir')||'desc', must: new Set((q.get('must')||'').split(',').filter(Boolean)) }
+  const state = { job: q.get('job')||'tts', area: (q.get('area')||'ottawa').toLowerCase(), sort: q.get('sort')||'transparency', dir: q.get('dir')||'desc', must: new Set((q.get('must')||'').split(',').filter(Boolean)) }
   const JOBN = {tts:'Tub-to-shower conversion',shower:'Shower installation',tub:'Bathtub replacement',walkin:'Walk-in tubs',full:'Full bathroom renovation'}
   const table = $('table[data-master]'); if(!table) return
   const tbody = $('tbody', table), rows = $$('tr.row', tbody), dets = Object.fromEntries($$('tr.details', tbody).map(d=>[d.dataset.for,d]))
@@ -24,12 +24,12 @@
     })
     // sort
     const key = r => state.sort==='name' ? r.dataset.name.toLowerCase() : parseFloat(r.dataset[state.sort]||0)
-    const sorted = [...rows].sort((a,b)=>{ const x=key(a), y=key(b); const c = typeof x==='string' ? x.localeCompare(y) : (x-y) || (parseFloat(b.dataset.rating)-parseFloat(a.dataset.rating)); return state.dir==='desc' ? -c : c })
+    const sorted = [...rows].sort((a,b)=>{ const x=key(a), y=key(b); const c = typeof x==='string' ? x.localeCompare(y) : (x-y) || (parseFloat(a.dataset.reviews)-parseFloat(b.dataset.reviews)) || (parseFloat(a.dataset.rating)-parseFloat(b.dataset.rating)); return state.dir==='desc' ? -c : c })
     sorted.forEach(r=>{ tbody.appendChild(r); if(dets[r.dataset.id]) tbody.appendChild(dets[r.dataset.id]) })
     $$('th[data-sort]', table).forEach(th=>th.classList.toggle('sort', th.dataset.sort===state.sort))
     let empty = $('tr.empty', tbody); if(!empty){ empty = document.createElement('tr'); empty.className='empty'; empty.innerHTML='<td colspan="15" style="color:var(--pewter);height:48px">No company matches every must-have. <a href="#" data-reset>Clear the must-haves</a> to see all 8.</td>'; tbody.appendChild(empty) }
     empty.hidden = shown>0; tbody.appendChild(empty)
-    if(status) status.innerHTML = `Showing ${shown} of ${rows.length} - sorted by ${state.sort==='name'?'name A-Z':state.sort==='rating'?'Google rating':'Google reviews, most first'} - <a href="#" data-sort="name">Sort A-Z</a> - <a href="#" data-reset>Reset</a>`
+    if(status) status.innerHTML = `Showing ${shown} of ${rows.length} - sorted by ${state.sort==='name'?'name A-Z':state.sort==='rating'?'Google rating':state.sort==='transparency'?'prices published, most first':'Google reviews, most first'} - <a href="#" data-sort="reviews">Sort by reviews</a> - <a href="#" data-sort="name">Sort A-Z</a> - <a href="#" data-reset>Reset</a>`
     // chips
     $$('[data-job]').forEach(c=>c.classList.toggle('on', c.dataset.job===state.job))
     $$('[data-area]').forEach(c=>c.classList.toggle('on', c.dataset.area===state.area))
@@ -43,7 +43,7 @@
     else if(t.dataset.area) state.area=t.dataset.area
     else if(t.dataset.must){ state.must.has(t.dataset.must) ? state.must.delete(t.dataset.must) : state.must.add(t.dataset.must) }
     else if(t.dataset.sort){ if(state.sort===t.dataset.sort && t.tagName==='TH') state.dir = state.dir==='desc'?'asc':'desc'; else { state.sort=t.dataset.sort; state.dir = state.sort==='name'?'asc':'desc' } }
-    else if(t.hasAttribute('data-reset')){ state.must.clear(); state.area='ottawa'; state.sort='reviews'; state.dir='desc' }
+    else if(t.hasAttribute('data-reset')){ state.must.clear(); state.area='ottawa'; state.sort='transparency'; state.dir='desc' }
     else if(t.classList.contains('exp')){ const d=dets[t.dataset.for]; d.hidden=!d.hidden; t.textContent=d.hidden?'›':'⌄'; return }
     apply()
   })
