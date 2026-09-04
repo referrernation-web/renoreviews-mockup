@@ -1,0 +1,435 @@
+[
+  {
+    "id": "capital",
+    "name": "Capital Bathroom Renovation",
+    "legal": "Capital Bathroom Renovation",
+    "site": "capitalbathroomrenovation.com",
+    "phone": "(613) 869-4080",
+    "addr": "67 Iber Road West, Unit 105, Stittsville, ON K2S 1E7",
+    "google": {
+      "r": 4.9,
+      "n": 115,
+      "last": "May 2026",
+      "src": "https://reviews.birdeye.com/capital-bathroom-renovation-ottawa-166987105776092",
+      "note": "Birdeye mirror of Google"
+    },
+    "hs": {
+      "r": 5,
+      "n": 20,
+      "last": "14 Dec 2024",
+      "src": "https://homestars.com"
+    },
+    "bbb": {
+      "r": "A+",
+      "acc": "No",
+      "start": 2014,
+      "file": 2022,
+      "src": "https://www.bbb.org"
+    },
+    "houzz": {
+      "r": null,
+      "n": 0
+    },
+    "fb": "100% recommend (9 reviews)",
+    "price": {
+      "tts": {
+        "v": "Starting from $7,500",
+        "w": "Tub To Shower Conversion with Raw Materials: Starting from $7,500",
+        "u": "/bathroom-renovation-cost/"
+      },
+      "shower": null,
+      "tub": {
+        "v": "$2,000 to $2,500",
+        "w": "bathtub replacement $2,000-$2,500 (line item)",
+        "u": "/bathroom-renovation-cost/"
+      },
+      "walkin": null,
+      "full": {
+        "v": "$7,000 to $25,000+",
+        "w": "from $7,000 for a basic powder room refresh to $25,000+ for a luxury primary bathroom",
+        "u": "/bathroom-renovation-cost/"
+      }
+    },
+    "warranty": "5-year warranty on our services, covering the labour and installation",
+    "warrantyPub": true,
+    "install": "A bathroom renovation usually takes between 1 to 2 weeks",
+    "oneDay": "No",
+    "walkin": "No",
+    "walkinOffered": false,
+    "areas": "Ottawa, Kanata, Nepean, Barrhaven, Stittsville, Orleans + 25 more",
+    "claimYears": "since 2012 / over 15 years",
+    "showroom": "Yes, 67 Iber Rd #105 (by appointment)",
+    "row": 1,
+    "ledger": "RR-001"
+  },
+  {
+    "id": "westend",
+    "name": "Westend Bath and Kitchen",
+    "legal": "Westend Bath and Kitchen Centre",
+    "site": "westendbk.ca",
+    "phone": "613-226-7701",
+    "addr": "1660 Woodward Dr, Ottawa, ON K2C 3R8",
+    "google": {
+      "r": 4.8,
+      "n": 81,
+      "last": "25 Jun 2026",
+      "src": "https://www.trustindex.io/reviews/westendbk.ca",
+      "note": "Trustindex mirror; Birdeye mirror shows 91"
+    },
+    "hs": {
+      "r": 4.6,
+      "n": 9,
+      "last": "3 Feb 2017"
+    },
+    "bbb": {
+      "r": "A+",
+      "acc": "Yes, since 1992",
+      "start": 1987,
+      "file": 1992
+    },
+    "houzz": {
+      "r": 4.8,
+      "n": 5
+    },
+    "fb": null,
+    "price": {
+      "tts": null,
+      "shower": null,
+      "tub": null,
+      "walkin": null,
+      "full": null
+    },
+    "warranty": "Each project is backed by our 3-year labour warranty",
+    "warrantyPub": true,
+    "install": null,
+    "oneDay": "Not published",
+    "walkin": "Not published",
+    "walkinOffered": false,
+    "areas": "Nepean, Barrhaven, Kanata, Stittsville, Orleans, Manotick + 5 more",
+    "claimYears": "since 1987",
+    "showroom": "Yes, 1660 Woodward Dr (appointments required)",
+    "row": 2,
+    "ledger": "RR-002"
+  },
+  {
+    "id": "fivestar",
+    "name": "Five Star Bath Solutions of Ottawa",
+    "legal": "Aqua Harmony Remodeling Corp.",
+    "site": "fivestarbathsolutions.com/ottawa-on",
+    "phone": "(613) 702-2435",
+    "addr": "1 Rideau St No. 728, Ottawa, ON K1N 8S7",
+    "google": {
+      "r": 4.8,
+      "n": 78,
+      "last": null,
+      "src": "https://www.google.com/search?q=Five+Star+Bath+Solutions+of+Ottawa",
+      "note": "Google knowledge panel"
+    },
+    "hs": null,
+    "bbb": {
+      "r": "A",
+      "acc": "No",
+      "start": 2024,
+      "file": 2024
+    },
+    "houzz": null,
+    "fb": "Not yet rated (2 reviews)",
+    "price": {
+      "tts": null,
+      "shower": null,
+      "tub": null,
+      "walkin": null,
+      "full": null
+    },
+    "warranty": "Full lifetime warranty. Covers all products, labor, and materials. Fully transferable.",
+    "warrantyPub": true,
+    "install": "Remodels in as little as 1 day",
+    "oneDay": "Yes",
+    "walkin": "Yes",
+    "walkinOffered": true,
+    "areas": "Gatineau, Kanata, Orleans, Nepean, Aylmer",
+    "claimYears": "since 1996 (brand); Ottawa branch opened Oct 2024",
+    "showroom": "None found",
+    "row": 3,
+    "ledger": "RR-003"
+  },
+  {
+    "id": "walkintubs",
+    "name": "Walk in Tubs Ottawa",
+    "legal": "15754356 Canada Inc.",
+    "site": "walkintubottawa.com",
+    "phone": "613-299-5522",
+    "addr": "323 Coventry Rd, Ottawa, ON K1K 3X6",
+    "google": {
+      "r": 5,
+      "n": 69,
+      "last": null,
+      "src": "https://reviews.birdeye.com/walk-in-tubs-ottawa-showroom-166919362299626",
+      "note": "Birdeye mirror of Google"
+    },
+    "hs": {
+      "r": null,
+      "n": 0,
+      "last": null
+    },
+    "bbb": {
+      "r": "A+",
+      "acc": "Yes, since 2013",
+      "start": 2008,
+      "file": 2013
+    },
+    "houzz": null,
+    "fb": "100% recommend (7 reviews)",
+    "price": {
+      "tts": null,
+      "shower": null,
+      "tub": null,
+      "walkin": null,
+      "full": null
+    },
+    "warranty": "lifetime warranty on every part of the tub, not just the shell",
+    "warrantyPub": true,
+    "install": "often completed within a day",
+    "oneDay": "Yes",
+    "walkin": "Yes (specialist)",
+    "walkinOffered": true,
+    "areas": "Ottawa, Nepean, Gloucester, Orleans, Manotick, Stittsville + eastern Ontario",
+    "claimYears": "since 2010",
+    "showroom": "Yes, 323 Coventry Rd (by appointment)",
+    "row": 4,
+    "ledger": "RR-004"
+  },
+  {
+    "id": "ibathrooms",
+    "name": "iBathrooms",
+    "legal": "13318010 Canada Inc.",
+    "site": "ibathrooms.ca",
+    "phone": "613-725-7409",
+    "addr": "1826 Robertson Rd unit 16 Suite 321, Nepean, ON K2H 5Z6",
+    "google": {
+      "r": 4.9,
+      "n": 69,
+      "last": "Jul 2026",
+      "src": "https://reviews.birdeye.com/ibathrooms-166961698582101",
+      "note": "Birdeye mirror of Google"
+    },
+    "hs": {
+      "r": 5,
+      "n": 5,
+      "last": null
+    },
+    "bbb": {
+      "r": "A+",
+      "acc": "Yes, since 18 Jun 2026",
+      "start": 2021,
+      "file": 2026
+    },
+    "houzz": {
+      "r": 5,
+      "n": 2
+    },
+    "fb": "100% recommend (6 reviews)",
+    "price": {
+      "tts": {
+        "v": "Starting from $7,999",
+        "w": "Tub to Shower Conversion: Starting from $7,999 (labour, trades, rough materials); $10,999 all-inclusive",
+        "u": "/bathroom-renovation-cost/"
+      },
+      "shower": {
+        "v": "Starting from $9,999",
+        "w": "Prices start from $9,999 for a custom or Schluter walk-in shower renovation",
+        "u": "/walk-in-shower-renovation/"
+      },
+      "tub": null,
+      "walkin": null,
+      "full": {
+        "v": "Starting from $13,999",
+        "w": "3-Piece Bathroom: Starting from $13,999; 4-Piece $16,999; all-inclusive $19,999 / $25,999",
+        "u": "/bathroom-renovation-cost/"
+      }
+    },
+    "warranty": "Our work is backed by a 3-year labour warranty",
+    "warrantyPub": true,
+    "install": "Walk-in shower renovations can take just one week to complete",
+    "oneDay": "No",
+    "walkin": "Yes (walk-in baths and showers)",
+    "walkinOffered": true,
+    "areas": "Ottawa, Nepean, Kanata, Orleans, Stittsville, Barrhaven + 26 more",
+    "claimYears": "17 years of experience",
+    "showroom": "No (mobile showroom)",
+    "row": 5,
+    "ledger": "RR-005"
+  },
+  {
+    "id": "bathfitter",
+    "name": "Bath Fitter Ottawa",
+    "legal": "Ottawa Tub Liner Installations Inc.",
+    "site": "bathfitter.com/ca-en/location/ottawa",
+    "phone": "(613) 737-2033",
+    "addr": "3205 Swansea Crescent, Unit 1 & 2, Ottawa, ON K1G 3W5",
+    "google": {
+      "r": 4.3,
+      "n": 59,
+      "last": "19 Aug 2026",
+      "src": "https://reviews.birdeye.com/bath-fitter-ottawa-166838503641514",
+      "note": "Birdeye mirror; own-site widget shows 4.2 (54)"
+    },
+    "hs": null,
+    "bbb": {
+      "r": "A+",
+      "acc": "Yes, since 1989",
+      "start": 1986,
+      "file": 1989
+    },
+    "houzz": {
+      "r": null,
+      "n": 0
+    },
+    "fb": "Not yet rated (3 reviews)",
+    "price": {
+      "tts": null,
+      "shower": null,
+      "tub": null,
+      "walkin": null,
+      "full": null
+    },
+    "warranty": "transferable lifetime warranty against manufacturing defects (acrylic products)",
+    "warrantyPub": true,
+    "install": "most bathtub and shower installations can be completed in as little as one day",
+    "oneDay": "Yes",
+    "walkin": "No",
+    "walkinOffered": false,
+    "areas": "Ottawa, Kanata, Stittsville, Nepean, Orleans, Gloucester, Barrhaven, Manotick + 3",
+    "claimYears": "over 40 years (franchise started 1986)",
+    "showroom": "Yes, 3205 Swansea Crescent",
+    "row": 6,
+    "ledger": "RR-006"
+  },
+  {
+    "id": "beleaf",
+    "name": "Be Leaf Renovation",
+    "legal": "Be Leaf Renovation Inc.",
+    "site": "beleafrenovation.ca",
+    "phone": "613-883-0018",
+    "addr": "12B Castlebrook Lane, Ottawa, ON K2G 5E8",
+    "google": {
+      "r": 5,
+      "n": 45,
+      "last": null,
+      "src": "https://www.beleafrenovation.ca/",
+      "note": "own site \"45+\"; mirrors 45 and 42"
+    },
+    "hs": null,
+    "bbb": {
+      "r": "A+",
+      "acc": "No",
+      "start": 2022,
+      "file": 2025
+    },
+    "houzz": {
+      "r": 5,
+      "n": 1
+    },
+    "fb": null,
+    "price": {
+      "tts": {
+        "v": "from $7,000",
+        "w": "Tub to Shower Conversion from $7K / $9K / $12K (Basic / Standard / Premium)",
+        "u": "/prices"
+      },
+      "shower": {
+        "v": "from $8,000",
+        "w": "Walk-In Shower from $8K / $10K / $12K",
+        "u": "/prices"
+      },
+      "tub": null,
+      "walkin": null,
+      "full": {
+        "v": "from $14,000",
+        "w": "3-4 Piece Bathroom from $14K / $18K / $24K",
+        "u": "/prices"
+      }
+    },
+    "warranty": "3-year warranty on all labor and installation",
+    "warrantyPub": true,
+    "install": "tub-to-shower in as little as 1-1,5 weeks",
+    "oneDay": "No",
+    "walkin": "No (walk-in showers only)",
+    "walkinOffered": false,
+    "areas": "Ottawa, Kanata, Nepean, Orleans, Barrhaven, Stittsville",
+    "claimYears": "opened 2018 (BBB: started 2022)",
+    "showroom": "None mentioned",
+    "row": 7,
+    "ledger": "RR-007"
+  },
+  {
+    "id": "bytown",
+    "publisher": true,
+    "name": "Bytown Better Bathtubs & Showers",
+    "legal": "Bytown Better Bathtubs & Showers Inc.",
+    "site": "bytownbath.ca",
+    "phone": "(613) 746-8055",
+    "addr": "3894 Russell Rd, Ottawa, ON K1G 3N2",
+    "google": {
+      "r": 4.8,
+      "n": 16,
+      "last": "about a year ago",
+      "src": "https://www.google.com/search?q=Bytown+Better+Bathtubs+%26+Showers+Ottawa",
+      "note": "Google knowledge panel; Birdeye mirror shows 4.7 (14)"
+    },
+    "hs": {
+      "r": 5,
+      "n": 2,
+      "last": null
+    },
+    "bbb": {
+      "r": "A+",
+      "acc": "No",
+      "start": 2021,
+      "file": 2022
+    },
+    "houzz": {
+      "r": null,
+      "n": 0
+    },
+    "fb": "Not yet rated (1 review)",
+    "price": {
+      "tts": {
+        "v": "Starting from $13,000",
+        "w": "Tub-to-Shower Conversion: Starting From $13,000. Typical range $13,000 to $15,000",
+        "u": "/bathroom-remodeling-cost-ottawa/"
+      },
+      "shower": {
+        "v": "Starting from $13,000",
+        "w": "Shower Remodeling: Starting From $13,000",
+        "u": "/bathroom-remodeling-cost-ottawa/"
+      },
+      "tub": {
+        "v": "$13,000 to $15,000",
+        "w": "Bathtub Remodel: Starting From $13,000. Typical range $13,000 to $15,000",
+        "u": "/bathroom-remodeling-cost-ottawa/"
+      },
+      "walkin": {
+        "v": "$27,000 to $29,000 plus tax",
+        "w": "fully supplied and installed American Standard therapeutic walk-in tub: $27,000 to $29,000 plus tax; walk-through cut-out $2,400 to $5,700",
+        "u": "/walk-in-tub-cost-ottawa-installation-pricing-guide/"
+      },
+      "full": {
+        "v": "Starting from $20,000",
+        "w": "Complete Bathroom Renovation: Starting From $20,000",
+        "u": "/bathroom-remodeling-cost-ottawa/"
+      }
+    },
+    "warranty": "Written Warranty On Every Install (term not published; blog states both 5-year and one-year)",
+    "warrantyPub": false,
+    "install": "1-3 Day Installs; walk-in tub cut-outs often finished in one day",
+    "oneDay": "Yes, published as 1-3 days",
+    "walkin": "Yes (American Standard)",
+    "walkinOffered": true,
+    "areas": "Ottawa, Kanata, Nepean, Barrhaven, Orleans, Manotick, Gatineau",
+    "claimYears": "since 2014 (BBB: started 2021)",
+    "showroom": "None (in-home consultations)",
+    "row": 8,
+    "ledger": "RR-008"
+  }
+]
