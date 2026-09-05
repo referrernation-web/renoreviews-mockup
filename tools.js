@@ -9,28 +9,39 @@
   const askBtn = (q, label='Get a Bytown quote for this') => `<div class="ad" style="margin-top:16px"><p class="adlab">Advertisement - from the publisher</p><p class="small" style="margin-top:6px">Bytown Better Bathtubs &amp; Showers publishes every price above and installs in 1-3 days. Free in-home quote, no obligation.</p><a class="btn" style="background:var(--ox);margin-top:10px" href="${D.root}ask.html?q=${encodeURIComponent(q)}">${label}</a></div>`
   const ledger = rows => `<p class="meta" style="margin-top:12px">Sources: ${rows.map(c=>`<a href="${D.root}companies/${c.id}.html">${c.name}</a>`).join(', ')} - published prices as read ${D.verified}. <a href="${D.root}">Full table</a>.</p>`
   const form = (sel, fn) => { const f=$(sel); if(!f) return; f.addEventListener('submit', e=>{ e.preventDefault(); const o=$('[data-out]', f.parentElement); o.innerHTML=fn(new FormData(f)); o.hidden=false; o.scrollIntoView({behavior:'smooth',block:'start'}) }) }
-  const priced = job => D.companies.filter(c=>c.price[job]).map(c=>({c,v:num(c.price[job].v)})).sort((a,b)=>a.v-b.v)
+  // basis 'complete': the all-inclusive published figure (complete tier if the company publishes one, else its price when scope is complete)
+  // basis 'labour': the labour/rough/basic-tier figure (only companies that publish one)
+  const priced = (job, basis='complete') => D.companies.map(c=>{ const p=c.price[job]; if(!p) return null
+      if(basis==='labour'){ if(p.scope==='complete') return null; return {c, v:num(p.v), w:p.w, label:p.scope==='basic'?'Basic tier':'Labour and rough materials'} }
+      const q = p.complete || (p.scope==='complete' ? p : null); if(!q) return null; return {c, v:num(q.v), w:q.w, label:'Complete'} }).filter(Boolean).sort((a,b)=>a.v-b.v)
+  const days = c => c.daysMax ? (c.daysMax<=3 ? c.daysMax+' day'+(c.daysMax>1?'s':'') : Math.round(c.daysMax/7*10)/10+' weeks') : 'Not published'
+  const warr = c => c.warrantyPub ? c.warranty.replace(/\s*\(.*$/,'').slice(0,60) : 'Term not published'
   const jobName = j => D.jobs[j]
 
   // ---- 1 estimator ----
   form('form[data-tool=estimate]', fd => {
-    const job=fd.get('job'), size=fd.get('size'), tier=fd.get('tier'); const P=priced(job)
-    if(!P.length) return `<p>No Ottawa company publishes a ${jobName(job).toLowerCase()} price. Ask each for a written figure; the <a href="${D.root}tools/checklist.html">checklist</a> tells you what it must include.</p>`
+    const job=fd.get('job'), size=fd.get('size'), tier=fd.get('tier'), basis=fd.get('basis')||'complete'; const P=priced(job, basis), L=priced(job,'labour')
+    if(!P.length) return `<p>No Ottawa company publishes a ${basis==='complete'?'complete':'labour-only'} ${jobName(job).toLowerCase()} price. Ask each for a written figure; the <a href="${D.root}tools/checklist.html">checklist</a> tells you what it must include.</p>`
     const lo=P[0], hi=P[P.length-1]
+    const fastN = P.filter(x=>x.c.fast).length
+    const completeOnly = basis==='labour' ? D.companies.filter(c=>c.price[job] && c.price[job].scope==='complete') : []
     const adders=[]; if(fd.get('plumb')) adders.push('Moving plumbing: not in any published starting price; ask for it as a line item.'); if(fd.get('permit')) adders.push('Permit and inspections: City of Ottawa fee plus the contractor\'s time; see the <a href="'+D.root+'tools/permit.html">permit tool</a>.'); if(fd.get('access')) adders.push('Accessibility features: grab bars, seat, curbless base; may be partly funded, see the <a href="'+D.root+'tools/funding.html">funding checker</a>.')
     if(size==='large') adders.push('Large or ensuite: published starts assume a standard alcove; tile area and a second vanity move the price up.')
     if(tier==='tile'||tier==='premium') adders.push('Tile or premium finish: the lowest published starts are for acrylic wall systems; tile companies publish "from" prices that assume mid-grade materials.')
-    return `<p class="eyebrow">Published price band - ${jobName(job)}</p><p class="stat" style="margin:8px 0">${money(lo.v)} to ${money(hi.v)}${hi.v===lo.v?'':''}</p><p>${P.length} of 8 Ottawa companies publish a ${jobName(job).toLowerCase()} price. Lowest published start: ${link(lo.c)} ("${lo.c.price[job].v}"). Highest: ${link(hi.c)} ("${hi.c.price[job].v}"). ${8-P.length} companies publish no price for this job.</p>
-<table style="margin-top:12px"><thead><tr><th>Company</th><th>Published price</th><th>Exact wording</th></tr></thead><tbody>${P.map(x=>`<tr class="${x.c.publisher?'pub':''}"><td style="height:44px">${link(x.c)}</td><td class="n" style="height:44px">${x.c.price[job].v}</td><td style="height:44px;white-space:normal;font-size:13px">"${x.c.price[job].w}"</td></tr>`).join('')}</tbody></table>
+    return `<p class="eyebrow">${basis==='complete'?'Complete, installed':'Labour and rough materials only'} - published ${jobName(job).toLowerCase()} prices, Ottawa</p><p class="stat" style="margin:8px 0">${money(lo.v)} to ${money(hi.v)}</p><p>${['No','One','Two','Three','Four','Five','Six'][P.length]||P.length} of eight Ottawa companies publish a ${basis==='complete'?'complete':'labour-only'} ${jobName(job).toLowerCase()} price. ${fastN?`${['','One','Two','Three','Four'][fastN]||fastN} of them install${fastN===1?'s':''} in three days or less.`:''} ${basis==='complete'?'Lower "from" prices you see in ads usually leave finishes out; they are listed below the table.':'These figures exclude finishes; add tile, glass, vanity and fixtures before comparing with a complete quote.'}</p>
+<table style="margin-top:12px"><thead><tr><th>Company</th><th>${basis==='complete'?'Complete price':'Labour-only price'}</th><th>Days out of use<small>as published</small></th><th>Warranty<small>as published</small></th><th>Exact wording</th></tr></thead><tbody>${P.map(x=>`<tr class="${x.c.publisher?'pub':''}"><td style="height:44px">${link(x.c)}</td><td class="n" style="height:44px">${money(x.v)}${x.label!=='Complete'?`<br><span class="meta">${x.label}</span>`:''}</td><td class="n" style="height:44px;${x.c.fast?'color:var(--turm);font-weight:500':''}">${days(x.c)}</td><td style="height:44px;white-space:normal;font-size:13px">${warr(x.c)}</td><td style="height:44px;white-space:normal;font-size:12px;line-height:16px">"${x.w}"</td></tr>`).join('')}</tbody></table>
+${basis==='complete'&&L.length?`<details style="margin-top:12px"><summary class="small" style="cursor:pointer;color:var(--turm)">Lower "from" prices you will see in ads, and what they leave out (${L.length})</summary><table style="margin-top:8px"><tbody>${L.map(x=>`<tr><td style="height:40px">${link(x.c)}</td><td class="n" style="height:40px">${money(x.v)}</td><td style="height:40px;white-space:normal;font-size:12px">${x.label}: "${x.w}"</td></tr>`).join('')}</tbody></table></details>`:''}
+${completeOnly.length?`<p class="small pewter" style="margin-top:12px">${completeOnly.map(c=>link(c)).join(', ')} publish${completeOnly.length===1?'es':''} complete prices only (${completeOnly.map(c=>c.price[job].v).join('; ')}); there is no labour-only figure to compare.</p>`:''}
 ${adders.length?`<p class="small" style="font-weight:500;margin-top:16px">What moves the price for your job</p><ul class="small" style="margin:6px 0 0;padding-left:20px">${adders.map(a=>`<li>${a}</li>`).join('')}</ul>`:''}
 <p class="small" style="font-weight:500;margin-top:16px">What published prices usually leave out</p><ul class="small" style="margin:6px 0 0;padding-left:20px"><li>Permit and inspection fees</li><li>Moving drains or supply lines</li><li>Tile or fixture upgrades above the base spec</li><li>Disposal of the old tub (ask; some include it)</li><li>HST</li></ul>${ledger(P.map(x=>x.c))}${askBtn('Quote for '+jobName(job).toLowerCase()+' in Ottawa, '+size+' bathroom, '+tier)}`
   })
 
   // ---- 2 quote checker ----
   form('form[data-tool=quote]', fd => {
-    const job=fd.get('job'), price=num(fd.get('price')), P=priced(job)
+    const job=fd.get('job'), price=num(fd.get('price')), basis=fd.get('labouronly')?'labour':'complete', P=priced(job, basis)
     const below=P.filter(x=>x.v<=price).length
     const flags=[]; const inc=k=>fd.get('inc_'+k)
+    if(basis==='complete' && P.length && price<P[0].v) flags.push(`Your quote is below every complete published price in Ottawa (${money(P[0].v)} and up). Cheaper is fine, but ask in writing what is not included: finishes, disposal, glass, HST.`)
     if(num(fd.get('warranty'))===0) flags.push('No warranty term in writing. Every Ottawa company that publishes a term offers 3 years or more; several offer lifetime on materials.')
     if(num(fd.get('deposit'))>50) flags.push('Deposit above 50%. The published norm in Ottawa is 50% on booking, 50% on completion.')
     if(!inc('written')) flags.push('Warranty not written into the quote.')
@@ -40,11 +51,22 @@ ${adders.length?`<p class="small" style="font-weight:500;margin-top:16px">What m
     if(!inc('tax')) flags.push('HST not shown. Add 13% to compare with published prices, which are usually before tax.')
     if(!inc('sched')) flags.push('No start date or day count. Published install times in Ottawa run from 1 day to 3 weeks depending on method.')
     if(!inc('permit') && (job==='full')) flags.push('Permit not mentioned on a full renovation. Ask who pulls it.')
-    const pos = P.length? `Your ${money(price)} quote is ${below===0?'below every':below===P.length?'above every':'above '+below+' of '+P.length} published ${jobName(job).toLowerCase()} starting price in Ottawa (${money(P[0].v)} to ${money(P[P.length-1].v)}).` : `No Ottawa company publishes a ${jobName(job).toLowerCase()} price, so there is no public benchmark; use the completeness check below.`
-    return `<p class="eyebrow">Your quote against published prices</p><p style="font-size:17px;line-height:26px;margin-top:8px">${pos} ${below===P.length&&P.length?'A higher price can be justified by scope; check the list below for what it should include.':''}</p>
-${P.length?`<table style="margin-top:12px"><thead><tr><th>Company</th><th>Published start</th><th>Your quote</th></tr></thead><tbody>${P.map(x=>`<tr class="${x.c.publisher?'pub':''}"><td style="height:40px">${link(x.c)}</td><td class="n" style="height:40px">${money(x.v)}</td><td class="n" style="height:40px">${price>=x.v?'+'+money(price-x.v):'-'+money(x.v-price)}</td></tr>`).join('')}</tbody></table>`:''}
+    const kind = basis==='complete' ? 'complete' : 'labour-only'
+    const pos = P.length? `Your ${money(price)} quote is ${below===0?'below every':below===P.length?'above every':'above '+below+' of '+P.length} ${kind} published ${jobName(job).toLowerCase()} price in Ottawa (${money(P[0].v)} to ${money(P[P.length-1].v)}).` : `No Ottawa company publishes a ${kind} ${jobName(job).toLowerCase()} price, so there is no public benchmark; use the completeness check below.`
+    return `<p class="eyebrow">Your quote against ${kind} published prices</p><p style="font-size:17px;line-height:26px;margin-top:8px">${pos} ${below===P.length&&P.length?'A higher price can be justified by scope, speed and warranty; check the list below for what it should include.':''}</p>
+${P.length?`<table style="margin-top:12px"><thead><tr><th>Company</th><th>${basis==='complete'?'Complete price':'Labour-only price'}</th><th>Days<small>as published</small></th><th>Warranty</th><th>Your quote vs it</th></tr></thead><tbody>${P.map(x=>`<tr class="${x.c.publisher?'pub':''}"><td style="height:40px">${link(x.c)}</td><td class="n" style="height:40px">${money(x.v)}</td><td class="n" style="height:40px">${days(x.c)}</td><td style="height:40px;white-space:normal;font-size:12px">${warr(x.c)}</td><td class="n" style="height:40px">${price>=x.v?'+'+money(price-x.v):'-'+money(x.v-price)}</td></tr>`).join('')}</tbody></table>`:''}
 <p class="small" style="font-weight:500;margin-top:16px">${flags.length?flags.length+' things to fix before you sign':'The quote covers everything a complete Ottawa bathroom quote should.'}</p>${flags.length?`<ul class="small" style="margin:6px 0 0;padding-left:20px">${flags.map(f=>`<li>${f}</li>`).join('')}</ul>`:''}
 ${ledger(P.map(x=>x.c))}${askBtn('Second quote: '+jobName(job).toLowerCase()+', current quote '+money(price), 'Get a second quote from Bytown')}`
+  })
+
+  // ---- E true cost ----
+  form('form[data-tool=truecost]', fd => {
+    const job=fd.get('job'), daily=num(fd.get('daily')), permit=num(fd.get('permit')), hst=!!fd.get('hst'); const P=priced(job,'complete')
+    if(!P.length) return `<p>No Ottawa company publishes a complete ${jobName(job).toLowerCase()} price.</p>`
+    const rows=P.map(x=>{ const d=x.c.daysMax||0; const tax=hst?x.v*0.13:0; const dcost=d*daily; return {x, d, tax, dcost, total:x.v+tax+dcost+permit} }).sort((a,b)=>a.total-b.total)
+    return `<p class="eyebrow">Total cost of a ${jobName(job).toLowerCase()} - published complete price${hst?' + HST':''}${daily?' + '+money(daily)+' per day out of use':''}${permit?' + '+money(permit)+' permit':''}</p>
+<table style="margin-top:12px"><thead><tr><th>Company</th><th>Complete price</th><th>Days out of use</th><th>Days × your daily cost</th><th>HST</th><th>Total</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.x.c.publisher?'pub':''}"><td style="height:44px">${link(r.x.c)}</td><td class="n" style="height:44px">${money(r.x.v)}</td><td class="n" style="height:44px;${r.x.c.fast?'color:var(--turm);font-weight:500':''}">${r.x.c.daysMax?r.x.c.daysMax:'n/p'}</td><td class="n" style="height:44px">${money(r.dcost)}</td><td class="n" style="height:44px">${money(r.tax)}</td><td class="n" style="height:44px;font-weight:500">${money(r.total)}</td></tr>`).join('')}</tbody></table>
+<p class="small pewter" style="margin-top:12px">Days are the longest figure each company publishes (Bytown "1-3 days", Capital "1 to 2 weeks", iBathrooms "one week", Be Leaf "1-1,5 weeks"). Companies with no published complete price are not in this table. Change the daily cost above and the order changes; that is the point.</p>${ledger(P.map(x=>x.c))}${askBtn('Total cost check for '+jobName(job).toLowerCase())}`
   })
 
   // ---- 3 funding ----

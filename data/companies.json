@@ -1,6 +1,7 @@
 [
   {
     "id": "bytown",
+    "daysMax": 3,
     "fast": true,
     "publisher": true,
     "name": "Bytown Better Bathtubs & Showers",
@@ -34,28 +35,37 @@
     "price": {
       "tts": {
         "v": "Starting from $13,000",
-        "w": "Tub-to-Shower Conversion: Starting From $13,000. Typical range $13,000 to $15,000",
-        "u": "/bathroom-remodeling-cost-ottawa/"
+        "w": "Tub-to-Shower Conversion: Starting From $13,000. Typical range $13,000 to $15,000 (complete, installed; inclusions to be published)",
+        "u": "/bathroom-remodeling-cost-ottawa/",
+        "scope": "complete"
       },
       "shower": {
         "v": "Starting from $13,000",
-        "w": "Shower Remodeling: Starting From $13,000",
-        "u": "/bathroom-remodeling-cost-ottawa/"
+        "w": "Shower Remodeling: Starting From $13,000 (complete, installed)",
+        "u": "/bathroom-remodeling-cost-ottawa/",
+        "scope": "complete"
       },
       "tub": {
         "v": "$13,000 to $15,000",
-        "w": "Bathtub Remodel: Starting From $13,000. Typical range $13,000 to $15,000",
-        "u": "/bathroom-remodeling-cost-ottawa/"
+        "w": "Bathtub Remodel: Starting From $13,000. Typical range $13,000 to $15,000 (complete, installed)",
+        "u": "/bathroom-remodeling-cost-ottawa/",
+        "scope": "complete"
       },
       "walkin": {
         "v": "$27,000 to $29,000 plus tax",
         "w": "fully supplied and installed American Standard therapeutic walk-in tub: $27,000 to $29,000 plus tax; walk-through cut-out $2,400 to $5,700",
-        "u": "/walk-in-tub-cost-ottawa-installation-pricing-guide/"
+        "u": "/walk-in-tub-cost-ottawa-installation-pricing-guide/",
+        "scope": "complete",
+        "cutout": {
+          "v": "$2,400 to $5,700",
+          "w": "walk-through cut-out: $2,400 to $5,700 CAD"
+        }
       },
       "full": {
         "v": "Starting from $20,000",
-        "w": "Complete Bathroom Renovation: Starting From $20,000",
-        "u": "/bathroom-remodeling-cost-ottawa/"
+        "w": "Complete Bathroom Renovation: Starting From $20,000 (complete, installed)",
+        "u": "/bathroom-remodeling-cost-ottawa/",
+        "scope": "complete"
       }
     },
     "warranty": "5-year warranty on labour and materials (owner statement, 2 Sept 2026; site currently says only \"Written Warranty On Every Install\" - to be published before launch)",
@@ -74,6 +84,7 @@
   },
   {
     "id": "capital",
+    "daysMax": 14,
     "fast": false,
     "name": "Capital Bathroom Renovation",
     "legal": "Capital Bathroom Renovation",
@@ -109,7 +120,13 @@
       "tts": {
         "v": "Starting from $7,500",
         "w": "Tub To Shower Conversion with Raw Materials: Starting from $7,500",
-        "u": "/bathroom-renovation-cost/"
+        "u": "/bathroom-renovation-cost/",
+        "scope": "labour",
+        "complete": {
+          "v": "Starting from $10,500",
+          "w": "Renovation Including All Raw Materials: Starting from 10,500; Luxury Tub To Shower Conversion Including All Raw Materials: Starting from $13,200",
+          "u": "/bathroom-renovation-cost/"
+        }
       },
       "shower": null,
       "tub": {
@@ -121,7 +138,13 @@
       "full": {
         "v": "$7,000 to $25,000+",
         "w": "from $7,000 for a basic powder room refresh to $25,000+ for a luxury primary bathroom",
-        "u": "/bathroom-renovation-cost/"
+        "u": "/bathroom-renovation-cost/",
+        "scope": "basic",
+        "complete": {
+          "v": "Starting from $18,900",
+          "w": "Bathroom Remodeling (All materials included in price): Starting from $18,900",
+          "u": "/bathroom-renovation-cost/"
+        }
       }
     },
     "warranty": "5-year warranty on our services, covering the labour and installation",
@@ -139,6 +162,7 @@
   },
   {
     "id": "ibathrooms",
+    "daysMax": 7,
     "fast": false,
     "name": "iBathrooms",
     "legal": "13318010 Canada Inc.",
@@ -171,20 +195,38 @@
     "price": {
       "tts": {
         "v": "Starting from $7,999",
-        "w": "Tub to Shower Conversion: Starting from $7,999 (labour, trades, rough materials); $10,999 all-inclusive",
-        "u": "/bathroom-renovation-cost/"
+        "w": "Tub to Shower Conversion: Starting from $7,999 (labour, trades, rough materials)",
+        "u": "/bathroom-renovation-cost/",
+        "scope": "labour",
+        "complete": {
+          "v": "Starting from $10,999",
+          "w": "Tub to Shower Conversion, all-inclusive: Starting from $10,999",
+          "u": "/bathroom-renovation-cost/"
+        }
       },
       "shower": {
         "v": "Starting from $9,999",
-        "w": "Prices start from $9,999 for a custom or Schluter walk-in shower renovation",
-        "u": "/walk-in-shower-renovation/"
+        "w": "Prices start from $9,999 for a custom or Schluter walk-in shower renovation (labour, trades and rough materials only)",
+        "u": "/walk-in-shower-renovation/",
+        "scope": "labour",
+        "complete": {
+          "v": "Starting from $13,999",
+          "w": "Custom/Schluter Shower all-inclusive: Starting from $13,999",
+          "u": "/bathroom-renovation-cost/"
+        }
       },
       "tub": null,
       "walkin": null,
       "full": {
         "v": "Starting from $13,999",
-        "w": "3-Piece Bathroom: Starting from $13,999; 4-Piece $16,999; all-inclusive $19,999 / $25,999",
-        "u": "/bathroom-renovation-cost/"
+        "w": "3-Piece Bathroom: Starting from $13,999 (labour, trades, rough materials); 4-Piece $16,999",
+        "u": "/bathroom-renovation-cost/",
+        "scope": "labour",
+        "complete": {
+          "v": "Starting from $19,999",
+          "w": "3-Piece Bathroom all-inclusive: Starting from $19,999; 4-Piece $25,999",
+          "u": "/bathroom-renovation-cost/"
+        }
       }
     },
     "warranty": "Our work is backed by a 3-year labour warranty",
@@ -202,6 +244,7 @@
   },
   {
     "id": "beleaf",
+    "daysMax": 10,
     "fast": false,
     "name": "Be Leaf Renovation",
     "legal": "Be Leaf Renovation Inc.",
@@ -230,20 +273,38 @@
     "price": {
       "tts": {
         "v": "from $7,000",
-        "w": "Tub to Shower Conversion from $7K / $9K / $12K (Basic / Standard / Premium)",
-        "u": "/prices"
+        "w": "Tub to Shower Conversion from $7K (Basic tier)",
+        "u": "/prices",
+        "scope": "basic",
+        "complete": {
+          "v": "from $9,000",
+          "w": "Tub to Shower Conversion from $9K (Standard) / $12K (Premium); all packages include labor, project management, waste removal",
+          "u": "/prices"
+        }
       },
       "shower": {
         "v": "from $8,000",
-        "w": "Walk-In Shower from $8K / $10K / $12K",
-        "u": "/prices"
+        "w": "Walk-In Shower from $8K (Basic tier)",
+        "u": "/prices",
+        "scope": "basic",
+        "complete": {
+          "v": "from $10,000",
+          "w": "Walk-In Shower from $10K (Standard) / $12K (Premium)",
+          "u": "/prices"
+        }
       },
       "tub": null,
       "walkin": null,
       "full": {
         "v": "from $14,000",
-        "w": "3-4 Piece Bathroom from $14K / $18K / $24K",
-        "u": "/prices"
+        "w": "3-4 Piece Bathroom from $14K (Basic tier)",
+        "u": "/prices",
+        "scope": "basic",
+        "complete": {
+          "v": "from $18,000",
+          "w": "3-4 Piece Bathroom from $18K (Standard) / $24K (Premium)",
+          "u": "/prices"
+        }
       }
     },
     "warranty": "3-year warranty on all labor and installation",
@@ -261,6 +322,7 @@
   },
   {
     "id": "westend",
+    "daysMax": null,
     "fast": false,
     "name": "Westend Bath and Kitchen",
     "legal": "Westend Bath and Kitchen Centre",
@@ -312,6 +374,7 @@
   },
   {
     "id": "fivestar",
+    "daysMax": 2,
     "fast": true,
     "name": "Five Star Bath Solutions of Ottawa",
     "legal": "Aqua Harmony Remodeling Corp.",
@@ -356,6 +419,7 @@
   },
   {
     "id": "walkintubs",
+    "daysMax": 1,
     "fast": true,
     "name": "Walk in Tubs Ottawa",
     "legal": "15754356 Canada Inc.",
@@ -404,6 +468,7 @@
   },
   {
     "id": "bathfitter",
+    "daysMax": 1,
     "fast": true,
     "name": "Bath Fitter Ottawa",
     "legal": "Ottawa Tub Liner Installations Inc.",
