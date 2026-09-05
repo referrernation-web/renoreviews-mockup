@@ -72,7 +72,7 @@ label.f{display:block;font-size:13px;font-weight:500;margin:12px 0 4px}
 .adlab{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ox)}
 .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}.node{background:var(--paper);border:1px solid var(--ash);border-radius:4px;padding:20px}.node h3{font-size:18px}
 
-@media (max-width:900px){ .wrap,.wide,.strip,.hdr,.foot{padding-left:16px;padding-right:16px} .hdr .nav{display:none} .cols,.foot,.flow{grid-template-columns:1fr !important} .wrap>div[style*="grid-template-columns"],.wrap[style*="grid-template-columns"],.tool2{grid-template-columns:1fr !important} h1{font-size:30px;line-height:34px} .tscroll{overflow-x:auto;border:1px solid var(--ash);border-radius:4px} .tscroll table{min-width:1200px} .strip{height:auto;min-height:56px;font-size:12px;line-height:16px;padding-top:8px;padding-bottom:8px} .brow{flex-direction:column} .brow .lab{padding-top:0} .chip{height:36px} .rank{grid-template-columns:40px 1fr} .rank>div:last-child{grid-column:2} }
+@media (max-width:900px){ .wrap,.wide,.strip,.hdr,.foot{padding-left:16px;padding-right:16px} .hdr .nav{display:none} .cols,.foot,.flow{grid-template-columns:1fr !important} .wrap>div[style*="grid-template-columns"],.wrap[style*="grid-template-columns"],.tool2{grid-template-columns:1fr !important} .wrap>div,.wrap>div>div{min-width:0} table{max-width:100%} h1{font-size:30px;line-height:34px} .tscroll{overflow-x:auto;border:1px solid var(--ash);border-radius:4px} .tscroll table{min-width:1200px} .strip{height:auto;min-height:56px;font-size:12px;line-height:16px;padding-top:8px;padding-bottom:8px} .brow{flex-direction:column} .brow .lab{padding-top:0} .chip{height:36px} .rank{grid-template-columns:40px 1fr} .rank>div:last-child{grid-column:2} }
 .tscroll{overflow-x:auto}
 .strip{position:sticky;top:0;z-index:50}
 button.exp:hover,th[data-sort]{cursor:pointer}
@@ -136,7 +136,7 @@ tr.details td{background:var(--fog)}
 /* mobile cards from table */
 .mcards{display:none}
 @media (max-width:767px){
-  .tscroll{display:none}
+  .tscroll:has(table[data-master]){display:none}
   .mcards{display:grid;gap:12px}
   .grid2,.bestof{grid-template-columns:1fr}
   .cc .facts{grid-template-columns:1fr 1fr 1fr;gap:8px}
