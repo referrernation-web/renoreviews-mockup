@@ -1,0 +1,152 @@
+// RenoReviews.ca tools. All client-side; reads window.RR_DATA. Nothing is sent anywhere.
+(function(){
+  const D = window.RR_DATA; if(!D) return
+  const $ = (s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)]
+  const money = n => '$'+Math.round(n).toLocaleString('en-CA')
+  const num = s => parseInt(String(s).replace(/[^0-9]/g,'').slice(0,6)) || 0
+  const tag = c => c.publisher ? '<span class="tag">Publisher</span>' : ''
+  const link = c => `<a href="${D.root}companies/${c.id}.html" style="color:var(--ink)">${c.name}</a>${tag(c)}`
+  const askBtn = (q, label='Get a Bytown quote for this') => `<div class="ad" style="margin-top:16px"><p class="adlab">Advertisement - from the publisher</p><p class="small" style="margin-top:6px">Bytown Better Bathtubs &amp; Showers publishes every price above and installs in 1-3 days. Free in-home quote, no obligation.</p><a class="btn" style="background:var(--ox);margin-top:10px" href="${D.root}ask.html?q=${encodeURIComponent(q)}">${label}</a></div>`
+  const ledger = rows => `<p class="meta" style="margin-top:12px">Sources: ${rows.map(c=>`<a href="${D.root}companies/${c.id}.html">${c.name}</a>`).join(', ')} - published prices as read ${D.verified}. <a href="${D.root}">Full table</a>.</p>`
+  const form = (sel, fn) => { const f=$(sel); if(!f) return; f.addEventListener('submit', e=>{ e.preventDefault(); const o=$('[data-out]', f.parentElement); o.innerHTML=fn(new FormData(f)); o.hidden=false; o.scrollIntoView({behavior:'smooth',block:'start'}) }) }
+  const priced = job => D.companies.filter(c=>c.price[job]).map(c=>({c,v:num(c.price[job].v)})).sort((a,b)=>a.v-b.v)
+  const jobName = j => D.jobs[j]
+
+  // ---- 1 estimator ----
+  form('form[data-tool=estimate]', fd => {
+    const job=fd.get('job'), size=fd.get('size'), tier=fd.get('tier'); const P=priced(job)
+    if(!P.length) return `<p>No Ottawa company publishes a ${jobName(job).toLowerCase()} price. Ask each for a written figure; the <a href="${D.root}tools/checklist.html">checklist</a> tells you what it must include.</p>`
+    const lo=P[0], hi=P[P.length-1]
+    const adders=[]; if(fd.get('plumb')) adders.push('Moving plumbing: not in any published starting price; ask for it as a line item.'); if(fd.get('permit')) adders.push('Permit and inspections: City of Ottawa fee plus the contractor\'s time; see the <a href="'+D.root+'tools/permit.html">permit tool</a>.'); if(fd.get('access')) adders.push('Accessibility features: grab bars, seat, curbless base; may be partly funded, see the <a href="'+D.root+'tools/funding.html">funding checker</a>.')
+    if(size==='large') adders.push('Large or ensuite: published starts assume a standard alcove; tile area and a second vanity move the price up.')
+    if(tier==='tile'||tier==='premium') adders.push('Tile or premium finish: the lowest published starts are for acrylic wall systems; tile companies publish "from" prices that assume mid-grade materials.')
+    return `<p class="eyebrow">Published price band - ${jobName(job)}</p><p class="stat" style="margin:8px 0">${money(lo.v)} to ${money(hi.v)}${hi.v===lo.v?'':''}</p><p>${P.length} of 8 Ottawa companies publish a ${jobName(job).toLowerCase()} price. Lowest published start: ${link(lo.c)} ("${lo.c.price[job].v}"). Highest: ${link(hi.c)} ("${hi.c.price[job].v}"). ${8-P.length} companies publish no price for this job.</p>
+<table style="margin-top:12px"><thead><tr><th>Company</th><th>Published price</th><th>Exact wording</th></tr></thead><tbody>${P.map(x=>`<tr class="${x.c.publisher?'pub':''}"><td style="height:44px">${link(x.c)}</td><td class="n" style="height:44px">${x.c.price[job].v}</td><td style="height:44px;white-space:normal;font-size:13px">"${x.c.price[job].w}"</td></tr>`).join('')}</tbody></table>
+${adders.length?`<p class="small" style="font-weight:500;margin-top:16px">What moves the price for your job</p><ul class="small" style="margin:6px 0 0;padding-left:20px">${adders.map(a=>`<li>${a}</li>`).join('')}</ul>`:''}
+<p class="small" style="font-weight:500;margin-top:16px">What published prices usually leave out</p><ul class="small" style="margin:6px 0 0;padding-left:20px"><li>Permit and inspection fees</li><li>Moving drains or supply lines</li><li>Tile or fixture upgrades above the base spec</li><li>Disposal of the old tub (ask; some include it)</li><li>HST</li></ul>${ledger(P.map(x=>x.c))}${askBtn('Quote for '+jobName(job).toLowerCase()+' in Ottawa, '+size+' bathroom, '+tier)}`
+  })
+
+  // ---- 2 quote checker ----
+  form('form[data-tool=quote]', fd => {
+    const job=fd.get('job'), price=num(fd.get('price')), P=priced(job)
+    const below=P.filter(x=>x.v<=price).length
+    const flags=[]; const inc=k=>fd.get('inc_'+k)
+    if(num(fd.get('warranty'))===0) flags.push('No warranty term in writing. Every Ottawa company that publishes a term offers 3 years or more; several offer lifetime on materials.')
+    if(num(fd.get('deposit'))>50) flags.push('Deposit above 50%. The published norm in Ottawa is 50% on booking, 50% on completion.')
+    if(!inc('written')) flags.push('Warranty not written into the quote.')
+    if(!inc('wsib')) flags.push('No WSIB and liability certificate attached. Ask for it before signing; you can be liable for an uninsured worker injured in your home.')
+    if(!inc('demo')) flags.push('Demolition and disposal not listed. It is either included silently or will appear as an extra.')
+    if(!inc('walls')) flags.push('Wall system or tile not named by brand and model. You cannot compare quotes without it.')
+    if(!inc('tax')) flags.push('HST not shown. Add 13% to compare with published prices, which are usually before tax.')
+    if(!inc('sched')) flags.push('No start date or day count. Published install times in Ottawa run from 1 day to 3 weeks depending on method.')
+    if(!inc('permit') && (job==='full')) flags.push('Permit not mentioned on a full renovation. Ask who pulls it.')
+    const pos = P.length? `Your ${money(price)} quote is ${below===0?'below every':below===P.length?'above every':'above '+below+' of '+P.length} published ${jobName(job).toLowerCase()} starting price in Ottawa (${money(P[0].v)} to ${money(P[P.length-1].v)}).` : `No Ottawa company publishes a ${jobName(job).toLowerCase()} price, so there is no public benchmark; use the completeness check below.`
+    return `<p class="eyebrow">Your quote against published prices</p><p style="font-size:17px;line-height:26px;margin-top:8px">${pos} ${below===P.length&&P.length?'A higher price can be justified by scope; check the list below for what it should include.':''}</p>
+${P.length?`<table style="margin-top:12px"><thead><tr><th>Company</th><th>Published start</th><th>Your quote</th></tr></thead><tbody>${P.map(x=>`<tr class="${x.c.publisher?'pub':''}"><td style="height:40px">${link(x.c)}</td><td class="n" style="height:40px">${money(x.v)}</td><td class="n" style="height:40px">${price>=x.v?'+'+money(price-x.v):'-'+money(x.v-price)}</td></tr>`).join('')}</tbody></table>`:''}
+<p class="small" style="font-weight:500;margin-top:16px">${flags.length?flags.length+' things to fix before you sign':'The quote covers everything a complete Ottawa bathroom quote should.'}</p>${flags.length?`<ul class="small" style="margin:6px 0 0;padding-left:20px">${flags.map(f=>`<li>${f}</li>`).join('')}</ul>`:''}
+${ledger(P.map(x=>x.c))}${askBtn('Second quote: '+jobName(job).toLowerCase()+', current quote '+money(price), 'Get a second quote from Bytown')}`
+  })
+
+  // ---- 3 funding ----
+  form('form[data-tool=funding]', fd => {
+    const cost=num(fd.get('cost')), y=k=>fd.get(k)==='yes'
+    const hatc = y('senior') ? Math.min(cost,20000)*0.15 : 0
+    const orOk = y('senior') && y('owner') && y('income') && y('assessed')
+    const orAmt = orOk ? Math.min(cost, 20000) : 0
+    const rows=[['Ontario Renovates (City of Ottawa)', orOk?money(orAmt)+' possible':'Not eligible on your answers', 'Up to $20,000: a 10-year forgivable loan of up to $15,000 for essential repairs and accessibility, plus up to $5,000 as an accessibility grant. Owner-occupied, income and assessment limits apply, first come first served, program runs to March 31, 2027.','https://ottawa.ca/en/family-and-social-services/housing-and-homelessness/ontario-renovates-program/homeowner'],['Home Accessibility Tax Credit (federal)', hatc?money(hatc)+' tax reduction':'Not eligible on your answers', '15% of up to $20,000 of qualifying accessibility expenses per year, for a person 65+ or eligible for the Disability Tax Credit, or a relative supporting them. Non-refundable. Claimed on the tax return, so it arrives as a refund or lower tax, not cash up front.','https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-31285-home-accessibility-expenses.html'],['Multigenerational Home Renovation Tax Credit', y('unit')?'Possibly, but only for a self-contained secondary unit':'Not applicable', 'Refundable credit of 15% of up to $50,000 for building a self-contained unit for a senior or disabled relative. A bathroom renovation on its own does not qualify.','https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-45355-mhrtc.html']]
+    const total=orAmt+hatc
+    return `<p class="eyebrow">Funding that may apply to a ${money(cost)} accessible bathroom</p><p class="stat" style="margin:8px 0">${money(total)}</p><p>${total?'combined, if the applications are approved. The two programs can be used on the same job; the tax credit is calculated on what you paid after any grant.':'on your answers. Change an answer above to see what would qualify.'}</p>
+<table style="margin-top:12px"><thead><tr><th>Program</th><th>For you</th><th>Rule, as published</th></tr></thead><tbody>${rows.map(([p,v,r,u])=>`<tr><td style="height:auto;padding:10px 12px;font-weight:500;white-space:normal">${p}</td><td style="height:auto;padding:10px 12px;white-space:normal" class="n">${v}</td><td style="height:auto;padding:10px 12px;white-space:normal;font-size:13px;line-height:18px">${r} <a href="${u}" rel="noopener">Source ↗</a></td></tr>`).join('')}</tbody></table>
+<p class="small" style="margin-top:12px">Next step: apply to Ontario Renovates before signing (approval must come first), keep every receipt for the tax credit, and ask the installer to itemize accessibility items on the invoice.</p>${askBtn('Accessible bathroom quote, funding applies, cost about '+money(cost), 'Ask Bytown for an itemized accessibility quote')}`
+  })
+
+  // ---- 4 permit ----
+  form('form[data-tool=permit]', fd => {
+    const y=k=>fd.get(k)==='yes'
+    let verdict, why
+    if(y('struct')) { verdict='Permit required'; why='Structural changes (walls, openings, joists, subfloor) always need a building permit in Ottawa.' }
+    else if(y('plumb')||y('elec')) { verdict='Permit likely required'; why='Altering plumbing or electrical is permit work under the Ontario Building Code as applied by the City of Ottawa; an electrical permit also goes through the Electrical Safety Authority. Confirm the scope with Building Code Services at 3-1-1.' }
+    else if(y('same')) { verdict='Permit generally not required'; why='Like-for-like replacement of fixtures, tile and vanity on the existing lines is cosmetic work. Keep the invoice describing the scope.' }
+    else { verdict='Call 3-1-1'; why='Your answers are mixed. Describe the job to City of Ottawa Building Code Services; they will tell you in one call.' }
+    return `<p class="eyebrow">Result</p><p class="stat" style="margin:8px 0;font-size:26px">${verdict}</p><p>${why}</p><ul class="small" style="margin:12px 0 0;padding-left:20px"><li>City of Ottawa building permits: <a href="https://ottawa.ca/en/planning-development-and-construction/building-and-renovating" rel="noopener">ottawa.ca ↗</a></li><li>Electrical work: Electrical Safety Authority notification is separate from the building permit.</li><li>Ask which company pulls the permit and whether the fee is in the quote: it is question 5 on the <a href="${D.root}tools/checklist.html">checklist</a>.</li></ul>${askBtn('Bathroom job, permit status: '+verdict, 'Ask Bytown who pulls the permit')}`
+  })
+
+  // ---- 10a financing ----
+  form('form[data-tool=financing]', fd => {
+    const P=num(fd.get('price')), n=Math.max(1,num(fd.get('months'))), r=parseFloat(fd.get('rate'))/100/12
+    const pay = r>0 ? P*r/(1-Math.pow(1+r,-n)) : P/n
+    const fin=[['bytown','Financing through Financeit; standard payment terms 50 percent on booking and 50 percent on completion'],['fivestar','"12 Months at 0%" (limited-time promotion, as published)'],['walkintubs','"as little as 100.00$ per month O.A.C."'],['ibathrooms','Financing via Financeit'],['bathfitter','"Low monthly payments" and "0% interest plans available"']]
+    return `<p class="eyebrow">Monthly payment on ${money(P)}</p><div class="cols" style="grid-template-columns:1fr 1fr;margin-top:8px"><div><p class="stat">${money(P/n)}</p><p class="small pewter">per month at 0% over ${n} months</p></div><div><p class="stat">${money(pay)}</p><p class="small pewter">per month at ${fd.get('rate')}% over ${n} months (total ${money(pay*n)})</p></div></div>
+<p class="small" style="font-weight:500;margin-top:16px">What Ottawa companies publish about financing</p><table style="margin-top:8px"><tbody>${fin.map(([id,t])=>{const c=D.companies.find(x=>x.id===id); return `<tr class="${c.publisher?'pub':''}"><td style="height:40px">${link(c)}</td><td style="height:40px;white-space:normal;font-size:13px">${t}</td></tr>`}).join('')}</tbody></table><p class="meta" style="margin-top:8px">Companies not listed publish nothing about financing. Rates shown are illustrative; the lender sets the actual rate on approval.</p>${askBtn('Financing question on a '+money(P)+' job','Ask Bytown about Financeit terms')}`
+  })
+
+  // ---- 10b repair or replace ----
+  form('form[data-tool=repair]', fd => {
+    const y=k=>fd.get(k)==='yes', age=+fd.get('age'), leak=fd.get('leak')
+    let v, why
+    if(leak==='base'||y('mould')||y('crack')) { v='Replace'; why='A base or hidden leak, mould, or a flexing base means the problem is behind the surface. Reglazing or a liner would cover it, not fix it.' }
+    else if(y('access')) { v='Replace with a walk-in tub, a cut-out, or a low-threshold shower'; why='The tub wall is the hazard. A walk-through cut-out is the cheapest published fix; a walk-in tub or curbless shower is the full one.' }
+    else if(age===2 && fd.get('stay')==='long') { v='Replace'; why='Over 20 years old and you are staying: a refinish lasts a few years, a replacement lasts decades and comes with a warranty.' }
+    else if(leak==='seal') { v='Repair'; why='Caulk, grout and door seals are a repair, not a replacement. Fix it now before water gets behind the wall.' }
+    else if(age>=1 && fd.get('stay')==='short') { v='Reglaze or line'; why='Cosmetic wear and a short horizon: a refinish or liner is the lowest published cost.' }
+    else { v='Keep it, maintain it'; why='No leak, no damage, no access problem. Recaulk yearly and revisit in a few years.' }
+    const opts=[['Repair (caulk, seal, grout)','From about $200 to $600 as commonly quoted; no Ottawa company publishes a repair price','none'],['Reglaze or refinish','"$500 to $1,200 CAD" (Bytown, published)','bytown'],['Tub liner (acrylic over the old tub)','Not published by Bath Fitter or any Ottawa company; quote only','none'],['Walk-through cut-out','"$2,400 to $5,700 CAD" (Bytown, published)','bytown'],['Tub-to-shower conversion',priced('tts').map(x=>x.c.name.split(' ')[0]+' '+x.c.price.tts.v).join(' · '),'many'],['Walk-in tub, installed','"$27,000 to $29,000 plus tax" (Bytown, published; no other company publishes one)','bytown']]
+    return `<p class="eyebrow">Rule-of-thumb answer</p><p class="stat" style="margin:8px 0;font-size:26px">${v}</p><p>${why}</p><table style="margin-top:12px"><thead><tr><th>Option</th><th>Published Ottawa price</th></tr></thead><tbody>${opts.map(([o,p])=>`<tr><td style="height:auto;padding:10px 12px;white-space:normal">${o}</td><td style="height:auto;padding:10px 12px;white-space:normal;font-size:13px">${p}</td></tr>`).join('')}</tbody></table>${ledger(priced('tts').map(x=>x.c))}${askBtn('Repair or replace: '+v, 'Ask Bytown to look at it')}`
+  })
+
+  // ---- 10c aging in place ----
+  form('form[data-tool=aging]', fd => {
+    const KEYS=[['step','Lower the step: walk-through cut-out ($2,400 to $5,700 published), low-threshold shower, or walk-in tub'],['bars','Grab bars at entry and inside, anchored into blocking, not drywall'],['seat','A fold-down or built-in seat'],['floor','Non-slip surface in and outside the tub'],['hand','Hand-held shower on a slide bar'],['door','Widen the doorway to 32 inches'],['light','Brighter, even lighting; switch by the door'],['toilet','Comfort-height toilet or raised seat, grab bar beside it'],['valve','Anti-scald valve reachable from outside'],['turn','Clear a 5-foot turning circle']]
+    const no = KEYS.filter(([k])=>fd.get(k)!=='yes'); const score=10-no.length
+    return `<p class="eyebrow">Readiness score</p><p class="stat" style="margin:8px 0">${score} / 10</p><p>${score>=9?'The bathroom is close to ready; the items below finish it.':score>=6?'Usable with care today; the first three fixes below remove the biggest fall risks.':'The tub step and missing supports are the main fall risk in the home. Start with the first three.'}</p>${no.length?`<p class="small" style="font-weight:500;margin-top:12px">Fix first</p><ol class="small" style="margin:6px 0 0;padding-left:20px">${no.slice(0,3).map(([k,f])=>`<li>${f}</li>`).join('')}</ol>${no.length>3?`<p class="small" style="font-weight:500;margin-top:12px">Then</p><ul class="small" style="margin:6px 0 0;padding-left:20px">${no.slice(3).map(([k,f])=>`<li>${f}</li>`).join('')}</ul>`:''}`:''}<p class="small" style="margin-top:12px">Much of this can be funded: <a href="${D.root}tools/funding.html">check Ontario Renovates and the Home Accessibility Tax Credit</a>.</p>${askBtn('Aging-in-place bathroom, score '+score+'/10', 'Ask Bytown about walk-in tubs and cut-outs')}`
+  })
+
+  // ---- 5 timeline ----
+  form('form[data-tool=timeline]', fd => {
+    const m=fd.get('method'), one=fd.get('onebath')==='yes'
+    const plans={ acrylic:[['Day 1','Demolition, disposal, plumbing rough-in. Water to the bathroom off most of the day.'],['Day 2','Base and wall panels set, valve and fixtures installed. Toilet and sink usually back by evening.'],['Day 3','Trim, door or curtain rod, caulking, walkthrough. Shower usable after the caulk cures, usually 24 hours.']], cutout:[['Day 1','Cut-out and step installed, sealed. Often finished the same day; tub usable after cure.']], walkin:[['Day 1','Old tub out, plumbing and electrical hookup (a walk-in tub needs a dedicated circuit for jets).'],['Day 2','Tub set, door and seals fitted, wall surround, test fill. Usable after the caulk cures.']], tile:[['Day 1-2','Demolition and disposal; plumbing rough-in.'],['Day 3-5','Backer board, waterproofing membrane, curb and base; slope and flood test.'],['Day 6-10','Tile setting and grout; glass measured after tile.'],['Day 11-15','Glass installed (often a separate visit 7-10 days after measuring), fixtures, final caulk.']] }
+    const pub={ acrylic:'"1-3 Day Installs" (Bytown); "most projects are wrapped-up within a day" (Five Star); "as little as one day" (Bath Fitter)', cutout:'"often finished in one day" (Bytown)', walkin:'"one to two days" (Bytown blog); "Installed in Just 1-2 Days" (Five Star); "often completed within a day" (Walk in Tubs Ottawa)', tile:'"can take just one week" (iBathrooms walk-in shower); "1-1,5 weeks" (Be Leaf tub-to-shower); "1 to 2 weeks" (Capital)' }
+    const p=plans[m]
+    return `<p class="eyebrow">Your timeline - ${m}</p><table style="margin-top:8px"><tbody>${p.map(([d,t])=>`<tr><td class="n" style="height:auto;padding:10px 12px;text-align:left;width:110px">${d}</td><td style="height:auto;padding:10px 12px;white-space:normal">${t}</td></tr>`).join('')}</tbody></table><p class="small" style="margin-top:12px"><b>As published by Ottawa companies:</b> ${pub[m]}.</p>${one?`<div class="oxbox" style="margin-top:12px"><p class="small"><b>Only bathroom in the home:</b> the toilet is usually out for part of Day 1 only; ask the installer to reinstall it each evening. Plan showers elsewhere for ${p.length>3?'about two weeks':'one to two nights'}. Ask for the water shut-off times in writing.</p></div>`:''}${askBtn('Timeline for a '+m+' job'+(one?', only bathroom':''), 'Ask Bytown for start dates')}`
+  })
+
+  // ---- checklists (localStorage) ----
+  $$('[data-tool=checklist]').forEach(root=>{
+    const key='rr-check-'+(root.dataset.key||location.pathname)
+    let saved=[]; try{ saved=JSON.parse(localStorage.getItem(key)||'[]') }catch{}
+    $$('input[data-q]',root).forEach(i=>{ i.checked=saved.includes(i.dataset.q); i.addEventListener('change',()=>{ const on=$$('input[data-q]:checked',root).map(x=>x.dataset.q); try{ localStorage.setItem(key, JSON.stringify(on)) }catch{} }) })
+    $('[data-print]',root)?.addEventListener('click',e=>{e.preventDefault();window.print()})
+    $('[data-clear]',root)?.addEventListener('click',e=>{e.preventDefault();$$('input[data-q]',root).forEach(i=>i.checked=false);try{localStorage.removeItem(key)}catch{}})
+  })
+
+  // ---- visualize (sample mode) + SVG plan ----
+  const viz=$('[data-tool=visualize]'); if(viz){
+    let style='tts'
+    const scene = (after) => `<svg viewBox="0 0 640 400" width="100%" style="display:block;background:#EDE9E1"><rect x="0" y="0" width="640" height="300" fill="${after?'#F4F1EA':'#E3DCCF'}"/><rect x="0" y="300" width="640" height="100" fill="${after?'#CFC9BD':'#BFB6A6'}"/><rect x="420" y="40" width="120" height="110" fill="#DDEBF3" stroke="#9AA3AA" stroke-width="4"/>${after ? (style==='walkin' ? `<rect x="80" y="170" width="300" height="130" rx="8" fill="#FBFAF7" stroke="#8C8C86" stroke-width="3"/><rect x="200" y="180" width="60" height="110" fill="#E8E6E0" stroke="#8C8C86" stroke-width="2"/><circle cx="215" cy="235" r="4" fill="#555"/><rect x="60" y="60" width="340" height="120" fill="#FBFAF7" stroke="#C9C4B8"/><text x="90" y="100" font-family="monospace" font-size="12" fill="#676B70">WALK-IN TUB, LOW-STEP DOOR</text>` : style==='tile' ? `<rect x="60" y="40" width="340" height="260" fill="#DED9D0"/>${[...Array(8)].map((_,i)=>`<line x1="60" y1="${40+i*33}" x2="400" y2="${40+i*33}" stroke="#FBFAF7" stroke-width="2"/>`).join('')}${[...Array(6)].map((_,i)=>`<line x1="${60+i*60}" y1="40" x2="${60+i*60}" y2="300" stroke="#FBFAF7" stroke-width="2"/>`).join('')}<rect x="60" y="40" width="340" height="260" fill="none" stroke="#8C8C86" stroke-width="3"/><line x1="400" y1="40" x2="400" y2="300" stroke="#9AA3AA" stroke-width="6"/><text x="80" y="290" font-family="monospace" font-size="12" fill="#676B70">TILE SHOWER, GLASS PANEL, LOW CURB</text>` : `<rect x="60" y="40" width="340" height="260" fill="#FBFAF7" stroke="#8C8C86" stroke-width="3"/><rect x="80" y="60" width="300" height="220" fill="none" stroke="#E4E1DA" stroke-width="2"/><line x1="400" y1="40" x2="400" y2="300" stroke="#9AA3AA" stroke-width="6"/><circle cx="120" cy="90" r="8" fill="#8C8C86"/><rect x="70" y="250" width="320" height="6" fill="#8C8C86"/><text x="80" y="290" font-family="monospace" font-size="12" fill="#676B70">ACRYLIC SHOWER WALLS, LOW THRESHOLD, GLASS DOOR</text>`) : `<rect x="60" y="180" width="340" height="120" rx="10" fill="#EEE9DD" stroke="#8C8C86" stroke-width="3"/><rect x="60" y="40" width="340" height="140" fill="#D9CFBF"/>${[...Array(5)].map((_,i)=>`<line x1="60" y1="${40+i*35}" x2="400" y2="${40+i*35}" stroke="#C4B8A5" stroke-width="2"/>`).join('')}<rect x="60" y="150" width="340" height="30" fill="#CDBFA9"/><text x="80" y="290" font-family="monospace" font-size="12" fill="#676B70">EXISTING TUB AND TILE SURROUND (SAMPLE)</text>`}<text x="16" y="385" font-family="monospace" font-size="10" fill="#676B70">${after?'AI PREVIEW - SAMPLE RENDER - NOT A DESIGN DRAWING':'SAMPLE PHOTO'}</text></svg>`
+    $$('[data-style]',viz).forEach(c=>c.addEventListener('click',e=>{e.preventDefault();style=c.dataset.style;$$('[data-style]',viz).forEach(x=>x.classList.toggle('on',x===c));if(!$('[data-preview]',viz).hidden) render()}))
+    function render(){ const pv=$('[data-preview]',viz); pv.hidden=false; $('[data-before]',viz).innerHTML=scene(false); $('[data-after]',viz).innerHTML=scene(true); pv.scrollIntoView({behavior:'smooth',block:'nearest'}) }
+    $('[data-render]',viz).addEventListener('click',e=>{e.preventDefault();render()})
+    $('[data-slider]',viz).addEventListener('input',e=>{ $('[data-after]',viz).style.clipPath=`inset(0 ${100-e.target.value}% 0 0)` })
+    $('form[data-plan]',viz).addEventListener('submit',e=>{
+      e.preventDefault(); const fd=new FormData(e.target); const W=num(fd.get('w'))||60, L=num(fd.get('l'))||96, A=num(fd.get('a'))||60, walkin=!!fd.get('walkin')
+      const s=Math.min(360/L, 240/W); const px=n=>Math.round(n*s)
+      const plan=`<svg viewBox="0 0 420 ${px(W)+80}" width="100%" style="background:var(--paper);border:1px solid var(--ash);border-radius:4px"><g transform="translate(30,30)"><rect x="0" y="0" width="${px(L)}" height="${px(W)}" fill="none" stroke="#1D1F21" stroke-width="3"/><rect x="0" y="0" width="${px(A)}" height="${px(32)}" fill="${walkin?'#F7EEEE':'#F2F1EC'}" stroke="#865707" stroke-width="2"/><text x="6" y="16" font-family="monospace" font-size="10" fill="#865707">${walkin?'WALK-IN TUB':'SHOWER'} ${A}" x 32"</text><rect x="${px(L)-px(30)}" y="${px(W)-px(20)}" width="${px(30)}" height="${px(20)}" fill="#FBFAF7" stroke="#676B70"/><text x="${px(L)-px(30)+4}" y="${px(W)-px(20)+14}" font-family="monospace" font-size="9" fill="#676B70">VANITY 30"</text><circle cx="${px(L)-px(45)}" cy="${px(W)-px(10)}" r="${px(7)}" fill="#FBFAF7" stroke="#676B70"/><text x="${px(L)-px(52)}" y="${px(W)+14}" font-family="monospace" font-size="9" fill="#676B70">WC</text><text x="${px(L)/2-20}" y="${px(W)+22}" font-family="monospace" font-size="10">${L}"</text><text x="${px(L)+6}" y="${px(W)/2}" font-family="monospace" font-size="10">${W}"</text></g><text x="30" y="${px(W)+70}" font-family="monospace" font-size="9" fill="#676B70">PLAN - SCALE FROM YOUR MEASUREMENTS - NOT FOR CONSTRUCTION</text></svg>`
+      const H=84; const elev=`<svg viewBox="0 0 420 200" width="100%" style="background:var(--paper);border:1px solid var(--ash);border-radius:4px;margin-top:12px"><g transform="translate(30,20)"><rect x="0" y="0" width="${px(A)}" height="${px(H)}" fill="#F2F1EC" stroke="#1D1F21" stroke-width="2"/>${walkin?`<rect x="0" y="${px(H)-px(40)}" width="${px(A)}" height="${px(40)}" fill="#FBFAF7" stroke="#865707" stroke-width="2"/><rect x="${px(A/2-10)}" y="${px(H)-px(38)}" width="${px(20)}" height="${px(36)}" fill="#F7EEEE" stroke="#865707"/><text x="6" y="${px(H)-px(44)}" font-family="monospace" font-size="9" fill="#865707">TUB 40" HIGH, DOOR 20"</text>`:`<line x1="${px(A)}" y1="0" x2="${px(A)}" y2="${px(H)}" stroke="#9AA3AA" stroke-width="4"/><rect x="${px(A)-px(24)}" y="${px(H)-px(20)}" width="${px(20)}" height="${px(2)}" fill="#8C8C86"/><text x="6" y="${px(H)-6}" font-family="monospace" font-size="9" fill="#865707">THRESHOLD UNDER 1", GRAB BAR 33-36"</text>`}<text x="${px(A)/2-12}" y="${px(H)+16}" font-family="monospace" font-size="10">${A}"</text><text x="${px(A)+8}" y="${px(H)/2}" font-family="monospace" font-size="10">${H}"</text></g><text x="30" y="190" font-family="monospace" font-size="9" fill="#676B70">ELEVATION - WALL HEIGHT ${H}" ASSUMED - NOT FOR CONSTRUCTION</text></svg>`
+      $('[data-svg]',viz).innerHTML=plan+elev+`<p class="small" style="margin-top:8px">Take this to any company. Fixture positions are assumed; the installer confirms them on site.</p>`+askBtn('Plan drawn: '+L+'x'+W+' bathroom, '+A+'" alcove'+(walkin?', walk-in tub':', shower'), 'Send this plan to Bytown for a quote')
+    })
+  }
+
+  // ---- compare-2 ----
+  const c2=$('[data-tool=compare2]'); if(c2){
+    const q=new URLSearchParams(location.search); const ids=(q.get('compare')||'bytown,capital').split(',').slice(0,2); const cs=ids.map(id=>D.companies.find(c=>c.id===id)).filter(Boolean)
+    if(cs.length<2){ c2.innerHTML='<p>Pick two companies: <code>?compare=bytown,capital</code></p>'; return }
+    const rows=[['Google rating',c=>c.google.r.toFixed(1)+' ('+c.google.n+')'],['HomeStars',c=>c.hs&&c.hs.n?c.hs.r.toFixed(1)+' ('+c.hs.n+')':'No reviews'],['BBB',c=>c.bbb.r+', accredited: '+c.bbb.acc],['Business started (BBB)',c=>c.bbb.start],...Object.entries(D.jobs).map(([k,j])=>[j+' (published)',c=>c.price[k]?c.price[k].v:null]),['Warranty (published wording)',c=>c.warranty],['Install time (published)',c=>c.install],['Walk-in tubs',c=>c.walkin],['Service areas',c=>c.areas]]
+    c2.innerHTML=`<table><thead><tr><th></th>${cs.map(c=>`<th>${link(c)}</th>`).join('')}</tr></thead><tbody>${rows.map(([l,f])=>`<tr>${[l,...cs.map(f)].map((v,i)=>i===0?`<td style="font-weight:500;height:auto;padding:10px 12px">${v}</td>`:v==null?`<td class="np" style="height:auto;padding:10px 12px">Not published</td>`:`<td style="height:auto;padding:10px 12px;white-space:normal;${cs[i-1].publisher?'background:var(--oxtint)':''}">${v}</td>`).join('')}</tr>`).join('')}</tbody></table><p class="meta" style="margin-top:8px">Verified ${D.verified}. Share this page: the link carries the two companies.</p>`+askBtn('Comparing '+cs.map(c=>c.name).join(' vs '))
+    D.companies.forEach(()=>{}); // no-op
+  }
+
+  // ---- PWA install + shortlist ----
+  let deferred; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$$('[data-install]').forEach(b=>b.hidden=false)})
+  $$('[data-install]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();deferred&&deferred.prompt()}))
+  if('serviceWorker' in navigator) navigator.serviceWorker.register(D.root+'sw.js').catch(()=>{})
+})()

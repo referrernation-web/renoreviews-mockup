@@ -1,0 +1,15 @@
+{
+  "name": "RenoReviews.ca - Ottawa bathroom renovators compared",
+  "short_name": "RenoReviews",
+  "start_url": "/renoreviews-mockup/",
+  "scope": "/renoreviews-mockup/",
+  "display": "standalone",
+  "background_color": "#F2F1EC",
+  "theme_color": "#1D1F21",
+  "description": "Every Ottawa bathroom renovator in one verified table, plus tools: cost bands, quote checker, funding, permits, timeline. Published by Bytown Better Bathtubs & Showers.",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
