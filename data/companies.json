@@ -102,7 +102,8 @@
       "r": 5,
       "n": 20,
       "last": "14 Dec 2024",
-      "src": "https://homestars.com"
+      "src": "https://homestars.com",
+      "note": "aggregate not rendered on the profile; all 20 listed reviews show 5 of 5"
     },
     "bbb": {
       "r": "A+",
@@ -123,16 +124,17 @@
         "u": "/bathroom-renovation-cost/",
         "scope": "labour",
         "complete": {
-          "v": "Starting from $10,500",
-          "w": "Renovation Including All Raw Materials: Starting from 10,500; Luxury Tub To Shower Conversion Including All Raw Materials: Starting from $13,200",
+          "v": "Starting from $13,200",
+          "w": "Luxury Tub To Shower Conversion Including All Raw Materials: Starting from $13,200 (the only tub-to-shower figure that names all materials; a generic \"Renovation Including All Raw Materials: Starting from 10,500\" row also appears)",
           "u": "/bathroom-renovation-cost/"
         }
       },
       "shower": null,
       "tub": {
         "v": "$2,000 to $2,500",
-        "w": "bathtub replacement $2,000-$2,500 (line item)",
-        "u": "/bathroom-renovation-cost/"
+        "w": "bathtub replacement $2,000-$2,500 (a line item in a cost breakdown, not an installed job price)",
+        "u": "/bathroom-renovation-cost/",
+        "scope": "labour"
       },
       "walkin": null,
       "full": {
@@ -185,7 +187,7 @@
       "r": "A+",
       "acc": "Yes, since 18 Jun 2026",
       "start": 2021,
-      "file": 2026
+      "file": null
     },
     "houzz": {
       "r": 5,
@@ -263,7 +265,7 @@
       "r": "A+",
       "acc": "No",
       "start": 2022,
-      "file": 2025
+      "file": null
     },
     "houzz": {
       "r": 5,
@@ -276,22 +278,14 @@
         "w": "Tub to Shower Conversion from $7K (Basic tier)",
         "u": "/prices",
         "scope": "basic",
-        "complete": {
-          "v": "from $9,000",
-          "w": "Tub to Shower Conversion from $9K (Standard) / $12K (Premium); all packages include labor, project management, waste removal",
-          "u": "/prices"
-        }
+        "tiers": "Standard $9K / Premium $12K; packages include labour, project management, waste removal (materials grade not stated)"
       },
       "shower": {
         "v": "from $8,000",
         "w": "Walk-In Shower from $8K (Basic tier)",
         "u": "/prices",
         "scope": "basic",
-        "complete": {
-          "v": "from $10,000",
-          "w": "Walk-In Shower from $10K (Standard) / $12K (Premium)",
-          "u": "/prices"
-        }
+        "tiers": "Standard $10K / Premium $12K (materials grade not stated)"
       },
       "tub": null,
       "walkin": null,
@@ -300,11 +294,7 @@
         "w": "3-4 Piece Bathroom from $14K (Basic tier)",
         "u": "/prices",
         "scope": "basic",
-        "complete": {
-          "v": "from $18,000",
-          "w": "3-4 Piece Bathroom from $18K (Standard) / $24K (Premium)",
-          "u": "/prices"
-        }
+        "tiers": "Standard $18K / Premium $24K (materials grade not stated)"
       }
     },
     "warranty": "3-year warranty on all labor and installation",
@@ -345,7 +335,7 @@
       "r": "A+",
       "acc": "Yes, since 1992",
       "start": 1987,
-      "file": 1992
+      "file": null
     },
     "houzz": {
       "r": 4.8,
@@ -393,7 +383,7 @@
       "r": "A",
       "acc": "No",
       "start": 2024,
-      "file": 2024
+      "file": null
     },
     "houzz": null,
     "fb": "Not yet rated (2 reviews)",
@@ -442,7 +432,7 @@
       "r": "A+",
       "acc": "Yes, since 2013",
       "start": 2008,
-      "file": 2013
+      "file": null
     },
     "houzz": null,
     "fb": "100% recommend (7 reviews)",
@@ -459,7 +449,7 @@
     "oneDay": "Yes",
     "walkin": "Yes (specialist)",
     "walkinOffered": true,
-    "areas": "Ottawa, Nepean, Gloucester, Orleans, Manotick, Stittsville + eastern Ontario",
+    "areas": "Ottawa, Nepean, Gloucester, Orleans, Manotick, Stittsville + eastern Ontario and western Quebec",
     "claimYears": "since 2010",
     "showroom": "Yes, 323 Coventry Rd (by appointment)",
     "transparency": 0,
@@ -480,14 +470,14 @@
       "n": 59,
       "last": "19 Aug 2026",
       "src": "https://reviews.birdeye.com/bath-fitter-ottawa-166838503641514",
-      "note": "Birdeye mirror; own-site widget shows 4.2 (54)"
+      "note": "Birdeye mirror; own-site widget shows 4.2 (64), JSON-LD 4.2 (54)"
     },
     "hs": null,
     "bbb": {
       "r": "A+",
       "acc": "Yes, since 1989",
       "start": 1986,
-      "file": 1989
+      "file": null
     },
     "houzz": {
       "r": null,

@@ -16,7 +16,7 @@
     // filters
     let shown = 0
     rows.forEach(r=>{
-      let ok = state.area==='ottawa' || r.dataset.areas.includes(state.area) || r.dataset.areas.includes('+')
+      let ok = state.area==='ottawa' || r.dataset.areas.includes(state.area)
       if(state.must.has('oneday') && r.dataset.oneday!=='1') ok=false
       if(state.must.has('walkin') && r.dataset.walkin!=='1') ok=false
       if(state.must.has('bbb') && r.dataset.bbbacc!=='1') ok=false
@@ -48,7 +48,7 @@
     apply()
   })
   // copy as markdown
-  const md = $('[data-copy-md]'); if(md) md.addEventListener('click', e=>{ e.preventDefault(); const hs=$$('thead th',table).slice(0,-1).map(h=>h.childNodes[0].textContent.trim()); const body=rows.filter(r=>!r.hidden).map(r=>$$('td',r).slice(0,-1).map(td=>td.textContent.replace(/\d+$/,'').trim()).join(' | ')); navigator.clipboard?.writeText('| '+hs.join(' | ')+' |\n|'+hs.map(()=>'---').join('|')+'|\n'+body.map(b=>'| '+b+' |').join('\n')); md.textContent='Copied ✓' })
+  const md = $('[data-copy-md]'); if(md) md.addEventListener('click', e=>{ e.preventDefault(); const hs=$$('thead th',table).slice(0,-1).map(h=>h.childNodes[0].textContent.trim()); const body=rows.filter(r=>!r.hidden).map(r=>$$('td',r).slice(0,-1).map(td=>{const c=td.cloneNode(true); c.querySelectorAll('sup,.tag,.meta').forEach(x=>x.remove()); return c.textContent.trim()}).join(' | ')); navigator.clipboard?.writeText('| '+hs.join(' | ')+' |\n|'+hs.map(()=>'---').join('|')+'|\n'+body.map(b=>'| '+b+' |').join('\n')); md.textContent='Copied ✓' })
   apply()
 })()
 
@@ -66,12 +66,12 @@ window.askGuide = function(root){
       const qtext = ($('textarea').value||'').toLowerCase()
       const job = (JOBK.find(([k])=>qtext.includes(k))||[null,'tts'])[1]
       const area = AREAS.find(a=>qtext.includes(a))||'ottawa'
-      const cos = data.companies.filter(c=> area==='ottawa' || c.areas.toLowerCase().includes(area.replace('é','e')) || c.areas.includes('+'))
+      const cos = data.companies.filter(c=> area==='ottawa' || c.areas.toLowerCase().includes(area.replace('é','e')))
       const pub = cos.filter(c=>c.price[job]), rest = cos.filter(c=>!c.price[job])
       const JOBN = data.jobs[job]
       $('[data-q]').textContent = '"'+($('textarea').value||'')+'"'
       const w = n => ['No companies','One company','Two companies','Three companies','Four companies','Five companies'][n]||n+' companies'
-      $('[data-answer]').innerHTML = pub.length ? `${w(pub.length)} ${pub.length===1?'publishes':'publish'} a ${JOBN.toLowerCase()} price and ${pub.length===1?'serves':'serve'} ${area[0].toUpperCase()+area.slice(1)}: ${pub.map(c=>c.name).join(', ')}. The lowest published start is ${pub.map(c=>c.price[job].v).sort((a,b)=>parseInt(a.replace(/\D/g,''))-parseInt(b.replace(/\D/g,'')))[0]}. ${rest.length} more serve the area without a published ${JOBN.toLowerCase()} price.` : `No company publishes a ${JOBN.toLowerCase()} price for ${area}. ${cos.length} companies serve the area; ask each for a written figure.`
+      $('[data-answer]').innerHTML = pub.length ? `${w(pub.length)} ${pub.length===1?'publishes':'publish'} a ${JOBN.toLowerCase()} price and ${pub.length===1?'serves':'serve'} ${area[0].toUpperCase()+area.slice(1)}: ${pub.map(c=>c.name).join(', ')}. The lowest published start is ${pub.map(c=>c.price[job].v).sort((a,b)=>parseInt(a.replace(/,/g,'').match(/\d+/)[0])-parseInt(b.replace(/,/g,'').match(/\d+/)[0]))[0]}. ${rest.length} more serve the area without a published ${JOBN.toLowerCase()} price.` : `No company publishes a ${JOBN.toLowerCase()} price for ${area}. ${cos.length} companies serve the area; ask each for a written figure.`
       const list = [...pub, ...rest].slice(0,3)
       $('[data-rows]').innerHTML = list.map(c=>`<tr class="${c.publisher?'pub':''}"><td style="height:44px"><a href="${data.root}companies/${c.id}.html" style="color:var(--ink)">${c.name}</a>${c.publisher?'<span class="tag">Publisher</span>':''}</td>${c.price[job]?`<td class="n" style="height:44px">${c.price[job].v}</td>`:`<td class="np" style="height:44px">Not published</td>`}<td class="n" style="height:44px">${c.google.r.toFixed(1)} (${c.google.n})</td><td class="n" style="height:44px;font-size:12px">${data.verified}</td></tr>`).join('')
       $('[data-src]').textContent = `Sources: Table 1 rows ${list.map(c=>c.row).join(', ')} - verified ${data.verified}`

@@ -1,5 +1,5 @@
 // RenoReviews.ca service worker: cache-first for the app shell and tools, network-first for HTML so republishes show up.
-const V = 'rr-v1'
+const V = 'rr-v2'
 const ROOT = '/renoreviews-mockup/'
 const SHELL = [ROOT, ROOT+'app.js', ROOT+'tools.js', ROOT+'tools/', ROOT+'tools/estimate.html', ROOT+'tools/quote-check.html', ROOT+'tools/checklist.html', ROOT+'tools/funding.html', ROOT+'tools/permit.html', ROOT+'data/companies.json']
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())) })
